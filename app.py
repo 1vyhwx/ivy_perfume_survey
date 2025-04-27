@@ -3,7 +3,7 @@ import streamlit as st
 # Set up the page
 st.set_page_config(page_title="Ivy's Perfume Customization", page_icon="🌸", layout="centered")
 
-# Soft pastel background color
+# Soft pastel background
 page_bg_img = '''
 <style>
 body {
@@ -19,51 +19,79 @@ st.write("Welcome to your personal scent journey 🌸✨")
 
 # Survey Questions
 name = st.text_input("💬 What is your name?")
-
-pronouns = st.text_input("💬 What are your pronouns? (she/her, he/him, they/them, etc.)")
-
 gender = st.selectbox("💬 What is your gender?", ["Female", "Male", "Non-binary", "Prefer not to say", "Other"])
+age = st.selectbox("💬 What is your age group?", ["A: Under 18", "B: 18-25", "C: 26-40", "D: 41-60", "E: Over 60"])
+occupation = st.selectbox("💬 What is your occupation?", ["A: Student", "B: Working Professional", "C: Outdoor Worker", "D: Artist", "E: Retired", "F: Other"])
+scenario = st.selectbox("💬 When will you wear this perfume?", ["A: Daily", "B: Special Events", "C: Romantic Moments", "D: Relaxation", "E: Adventure"])
 
-age = st.selectbox("💬 What is your age group?", ["Under 18", "18-25", "26-40", "41-60", "Over 60"])
+# Vibe based on Scenario
+if scenario == 'A: Daily':
+    vibe = st.selectbox("💬 Choose a vibe:", ["A: Fresh & Clean", "B: Subtle & Elegant", "C: Energetic & Bright"])
+elif scenario == 'B: Special Events':
+    vibe = st.selectbox("💬 Choose a vibe:", ["A: Bold & Glamorous", "B: Rich & Mysterious", "C: Luxurious & Warm"])
+elif scenario == 'C: Romantic Moments':
+    vibe = st.selectbox("💬 Choose a vibe:", ["A: Soft & Sweet", "B: Sensual & Deep", "C: Dreamy & Romantic"])
+elif scenario == 'D: Relaxation':
+    vibe = st.selectbox("💬 Choose a vibe:", ["A: Light & Airy", "B: Cozy & Comforting", "C: Soft Floral"])
+elif scenario == 'E: Adventure':
+    vibe = st.selectbox("💬 Choose a vibe:", ["A: Vibrant & Playful", "B: Earthy & Natural", "C: Free-Spirited & Bright"])
+else:
+    vibe = 'Unknown'
 
-occupation = st.selectbox("💬 What is your occupation?", ["Student", "Working Professional", "Outdoor Worker", "Artist", "Retired", "Other"])
+# Scent Family based on Vibe
+vibe_mapping = {
+    'A': ['Citrus', 'Aquatic', 'Green'],
+    'B': ['Woody', 'Spicy', 'Amber'],
+    'C': ['Floral', 'Sweet', 'Gourmand']
+}
 
-scenario = st.selectbox("💬 When will you wear this perfume?", ["Daily Use", "Special Events", "Romantic Moments", "Relaxation", "Adventure"])
+vibe_key = vibe[0] if vibe else 'A'
+scent_options = vibe_mapping.get(vibe_key, ['Floral', 'Woody', 'Fruity'])
+scent_family = st.selectbox("💬 Choose a scent family:", scent_options)
 
-vibe = st.selectbox("💬 Desired Vibe:", [
-    "Fresh & Clean", "Subtle & Elegant", "Energetic & Bright",
-    "Bold & Glamorous", "Soft & Sweet", "Light & Airy",
-    "Cozy & Comforting", "Dreamy & Romantic", "Earthy & Natural",
-    "Free-Spirited & Bright"
-])
+longevity = st.selectbox("💬 How long do you want the scent to last?", ["A: Light (2-4hrs)", "B: Medium (6-8hrs)", "C: Strong (10+hrs)"])
 
-scent_family = st.selectbox("💬 Preferred Scent Family:", [
-    "Citrus", "Floral", "Woody", "Fruity", "Sweet", "Aquatic", "Spicy", "Amber"
-])
-
-longevity = st.selectbox("💬 Desired Longevity:", [
-    "Light (2-4 hours)", "Medium (6-8 hours)", "Strong (10+ hours)"
-])
-
-# Submit Button
+# Recommendation Button
 if st.button("✨ Reveal My Perfume Match ✨"):
-    recommendation = "A surprise perfume awaits you! ✨"
+    recommendation = "✨ A surprise perfume awaits you! ✨"
 
-    # Matching logic
-    if vibe == "Fresh & Clean" and scent_family == "Citrus":
-        recommendation = "🍋 Clinique Happy or Marc Jacobs Daisy Eau So Fresh"
-    elif vibe == "Dreamy & Romantic" and scent_family == "Floral":
-        recommendation = "🌸 Chanel Chance Eau Tendre or Gucci Bloom"
-    elif vibe == "Energetic & Bright" and scent_family == "Fruity":
-        recommendation = "🍓 Escada Sorbetto Rosso or Hollister Wave"
-    elif vibe == "Soft & Sweet" and scent_family == "Sweet":
-        recommendation = "🍬 Ariana Grande Cloud or Kayali Vanilla 28"
-    elif vibe == "Earthy & Natural" and scent_family == "Woody":
-        recommendation = "🌿 Le Labo Another 13 or Jo Malone Wood Sage & Sea Salt"
-    elif vibe == "Bold & Glamorous" and scent_family == "Amber":
-        recommendation = "🔥 YSL Black Opium or Givenchy L'Interdit"
+    # Matching Logic
+    matching_conditions = {
+        ('A', 'A', 'A', 'A', 'Citrus'): "🍋 Clinique Happy, Marc Jacobs Daisy Eau So Fresh",
+        ('A', 'A', 'B', 'A', 'Floral'): "🌸 Ariana Grande Cloud Pink, Miss Dior Blooming Bouquet",
+        ('A', 'A', 'C', 'A', 'Fruity'): "🍓 Escada Candy Love, Victoria's Secret Tease",
+        ('A', 'A', 'D', 'A', 'Aquatic'): "🌊 Bath and Body Works Sea Island Cotton, Dolce & Gabbana Light Blue",
+        ('A', 'A', 'E', 'A', 'Fruity'): "🍉 Escada Sorbetto Rosso, Hollister Wave for Her",
+        ('A', 'A', 'A', 'C', 'Green'): "🌿 Moschino Toy 2 Bubble Gum, Gucci Flora Gorgeous Jasmine",
+        ('A', 'A', 'B', 'C', 'Sweet'): "🍬 YSL Mon Paris Eau de Toilette, Vera Wang Princess",
+        ('B', 'B', 'B', 'A', 'Amber'): "🔥 YSL Libre Intense, Carolina Herrera Good Girl",
+        ('C', 'B', 'A', 'B', 'Woody'): "🌳 Chanel Coco Mademoiselle EDT, Hermès Terre d’Hermès",
+        ('B', 'D', 'C', 'C', 'Floral'): "🌸 Maison Margiela Replica Bubble Bath, Chanel Chance Eau Tendre",
+        ('E', 'E', 'D', 'B', 'Vanilla'): "🍦 Guerlain Mon Guerlain, Prada L’Homme Intense",
+        ('D', 'D', 'E', 'A', 'Fruity'): "🍍 Dolce & Gabbana Dolce Garden, Mancera Holidays",
+        ('B', 'B', 'A', 'C', 'Green'): "🌿 Chanel Chance Eau Fraîche, Hermès Un Jardin Sur Le Nil",
+        ('C', 'B', 'C', 'B', 'Spicy'): "🔥 Tom Ford Black Orchid, Lancôme La Nuit Trésor"
+    }
 
-    # Display the result
+    key = (age[0], occupation[0], scenario[0], vibe[0], scent_family)
+
+    if key in matching_conditions:
+        recommendation = matching_conditions[key]
+    else:
+        fallback_recommendations = {
+            'Floral': "🌸 Chloe Eau de Parfum, Gucci Bloom",
+            'Woody': "🌳 Tom Ford Oud Wood, Le Labo Another 13",
+            'Citrus': "🍋 Dior Eau Sauvage, Jo Malone Lime Basil & Mandarin",
+            'Fruity': "🍓 Escada Cherry in the Air, Ariana Grande Sweet Like Candy",
+            'Sweet': "🍬 Kayali Vanilla 28, Viktor & Rolf Bonbon",
+            'Amber': "🔥 YSL Black Opium, Givenchy L'Interdit",
+            'Aquatic': "🌊 Davidoff Cool Water, Giorgio Armani Acqua di Gioia",
+            'Spicy': "🌶️ Viktor & Rolf Spicebomb, Tom Ford Noir Extreme",
+            'Green': "🌿 Maison Margiela Replica Under the Lemon Trees"
+        }
+        recommendation = fallback_recommendations.get(scent_family, "✨ No fallback available ✨")
+
+    # Result Card
     st.markdown(f"""
     <div style="background-color:#ffe4f2;padding:30px;border-radius:15px;">
     <h2 style="color:#ff4081;text-align:center;">🎀 Hi {name or 'Lovely Friend'}! 🎀</h2>
@@ -72,4 +100,4 @@ if st.button("✨ Reveal My Perfume Match ✨"):
     </div>
     """, unsafe_allow_html=True)
 
-    st.balloons()  # 🎈 Cute effect when result is shown!
+    st.balloons()  # 🎈 Cute balloons animation
